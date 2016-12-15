@@ -105,7 +105,8 @@ namespace Microsoft.DotNet.Host.Build
             bool fIsCrossArch = false;
             if (!String.IsNullOrEmpty(rid))
             {
-                if ((String.Compare(rid, "win8-arm", true) == 0) || (String.Compare(rid, "win10-arm64", true) == 0))
+                if ((String.Compare(rid, "win8-arm", true) == 0) || (String.Compare(rid, "win10-arm64", true) == 0)
+                    || (String.Compare(rid, "ubuntu.14.04-arm", true) == 0) || (String.Compare(rid, "ubuntu.16.04-arm", true) == 0))
                 {
                     // We dont support running native tests for cross-architecture builds yet.
                     fIsCrossArch = true;
