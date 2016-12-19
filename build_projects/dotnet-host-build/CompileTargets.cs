@@ -388,10 +388,23 @@ namespace Microsoft.DotNet.Host.Build
             var hostNugetversion = hostVersion.LatestHostVersion.ToString();
             var content = $@"{c.BuildContext["CommitHash"]}{Environment.NewLine}{hostNugetversion}{Environment.NewLine}";
             var pkgDir = Path.Combine(c.BuildContext.BuildDirectory, "pkg");
-            var packCmd = "pack." + (CurrentPlatform.IsWindows ? "cmd" : "sh");
             string rid = HostPackageSupportedRids[c.BuildContext.Get<string>("TargetRID")];
             File.WriteAllText(Path.Combine(pkgDir, "version.txt"), content);
-            Exec(Path.Combine(pkgDir, packCmd));
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                Exec(Path.Combine(pkgDir, "pack.cmd"));
+            }
+            else
+            {
+                List<string> buildScriptArgList = new List<string>();
+                string buildScriptFile = Path.Combine(pkgDir, "pack.sh");
+
+                buildScriptArgList.Add("--rid");
+                buildScriptArgList.Add(rid);
+
+                Exec(buildScriptFile, buildScriptArgList);
+            }
 
             foreach (var file in Directory.GetFiles(Path.Combine(pkgDir, "bin", "packages"), "*.nupkg"))
             {
