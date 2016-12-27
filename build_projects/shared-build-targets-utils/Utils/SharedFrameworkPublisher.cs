@@ -101,7 +101,8 @@ namespace Microsoft.DotNet.Cli.Build
                 "--verbosity", "verbose",
                 "--disable-parallel",
                 "--infer-runtimes",
-                "--fallbacksource", _corehostPackageSource)
+                "--fallbacksource", _corehostPackageSource,
+                "--fallbacksource", Dirs.TestSource)
                 .WorkingDirectory(_sharedFrameworkSourceRoot)
                 .Execute()
                 .EnsureSuccessful();

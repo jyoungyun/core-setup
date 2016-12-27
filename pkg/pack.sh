@@ -47,7 +47,7 @@ done
 
 # acquire dependencies
 pushd "$__project_dir/deps"
-"$__project_dir/Tools/dotnetcli/dotnet" restore --configfile "$__project_dir/../NuGet.Config" --disable-parallel --packages "$__project_dir/packages"
+"$__project_dir/Tools/dotnetcli/dotnet" restore --configfile "$__project_dir/../NuGet.Config" --disable-parallel --packages "$__project_dir/packages" --fallbacksource "$__project_dir/../testsource" --verbosity "Debug"
 popd
 
 # cleanup existing packages

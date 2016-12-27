@@ -17,6 +17,7 @@ namespace Microsoft.DotNet.Host.Build
                 nameof(GenerateHostFxrDeb),
                 nameof(GenerateSharedFrameworkDeb))]
         [BuildPlatforms(BuildPlatform.Ubuntu, BuildPlatform.Debian)]
+        [Environment("DOTNET_CROSS_BUILD", "0")]
         public static BuildTargetResult GenerateDebs(BuildTargetContext c)
         {
             return c.Success();
@@ -161,6 +162,7 @@ namespace Microsoft.DotNet.Host.Build
         [Target(nameof(InstallSharedFramework),
                 nameof(RemovePackages))]
         [BuildPlatforms(BuildPlatform.Ubuntu, BuildPlatform.Debian)]
+        [Environment("DOTNET_CROSS_BUILD", "0")]
         public static BuildTargetResult TestDebInstaller(BuildTargetContext c)
         {
             return c.Success();

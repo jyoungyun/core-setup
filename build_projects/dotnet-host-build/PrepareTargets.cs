@@ -67,6 +67,7 @@ namespace Microsoft.DotNet.Host.Build
                 {
                     rootfsDir = Path.Combine(Dirs.RepoRoot, "cross", "rootfs", platformEnv);
                     Environment.SetEnvironmentVariable("ROOTFS_DIR", rootfsDir);
+                    Environment.SetEnvironmentVariable("DOTNET_CROSS_BUILD", "1");
                 }
             }
 
