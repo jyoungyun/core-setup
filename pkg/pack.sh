@@ -47,7 +47,7 @@ done
 
 # acquire dependencies
 pushd "$__project_dir/deps"
-"$__project_dir/Tools/dotnetcli/dotnet" restore --configfile "$__project_dir/../NuGet.Config" --disable-parallel --packages "$__project_dir/packages"
+"$__project_dir/Tools/dotnetcli/dotnet" restore --configfile "$__project_dir/../NuGet.Config" --disable-parallel --packages "$__project_dir/packages" --verbosity "Debug"
 popd
 
 # cleanup existing packages
@@ -67,8 +67,9 @@ else
     fi
 fi
 
-__common_parameters="/p:$__targets_param /p:DistroRid=$__distro_rid /verbosity:minimal"
+__common_parameters="/p:$__targets_param /p:DistroRid=$__distro_rid /verbosity:detailed"
 
+echo $__common_parameters
 $__msbuild $__project_dir/projects/packages.builds $__common_parameters || exit 1
 
 exit 0

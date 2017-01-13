@@ -346,26 +346,23 @@ namespace Microsoft.DotNet.Host.Build
         [Target]
         public static BuildTargetResult BuildProjectsForNuGetPackages(BuildTargetContext c)
         {
-            if (CurrentPlatform.IsWindows)
+            var configuration = c.BuildContext.Get<string>("Configuration");
+
+            // build projects for nuget packages
+            var packagingOutputDir = Path.Combine(Dirs.Intermediate, "forPackaging");
+            Mkdirp(packagingOutputDir);
+            foreach (var project in PackageTargets.ProjectsToPack)
             {
-                var configuration = c.BuildContext.Get<string>("Configuration");
+                // Just build them, we'll pack later
+                var packBuildResult = DotNetCli.Stage0.Build(
+                    "--build-base-path",
+                    packagingOutputDir,
+                    "--configuration",
+                    configuration,
+                    Path.Combine(c.BuildContext.BuildDirectory, "src", project))
+                    .Execute();
 
-                // build projects for nuget packages
-                var packagingOutputDir = Path.Combine(Dirs.Intermediate, "forPackaging");
-                Mkdirp(packagingOutputDir);
-                foreach (var project in PackageTargets.ProjectsToPack)
-                {
-                    // Just build them, we'll pack later
-                    var packBuildResult = DotNetCli.Stage0.Build(
-                        "--build-base-path",
-                        packagingOutputDir,
-                        "--configuration",
-                        configuration,
-                        Path.Combine(c.BuildContext.BuildDirectory, "src", project))
-                        .Execute();
-
-                    packBuildResult.EnsureSuccessful();
-                }
+                packBuildResult.EnsureSuccessful();
             }
 
             return c.Success();
