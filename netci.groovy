@@ -10,7 +10,7 @@ def project = GithubProject
 def branch = GithubBranchName
 def isPR = true
 
-def platformList = ['Debian8.2:x64:Debug', 'PortableLinux:x64:Release', 'Ubuntu:x64:Release', 'Ubuntu16.04:x64:Release', 'Ubuntu16.10:x64:Release', 'OSX:x64:Release', 'Windows_NT:x64:Release', 'Windows_NT:x86:Debug', 'Windows_NT:arm:Debug', 'RHEL7.2:x64:Release', 'CentOS7.1:x64:Debug', 'Fedora23:x64:Debug', 'OpenSUSE13.2:x64:Debug', 'OpenSUSE42.1:x64:Debug']
+def platformList = ['Debian8.2:x64:Debug', 'PortableLinux:x64:Release', 'Ubuntu:x64:Release', 'Ubuntu16.04:x64:Release', 'Ubuntu16.10:x64:Release', 'Ubuntu14.04:arm:Release', 'OSX:x64:Release', 'Windows_NT:x64:Release', 'Windows_NT:x86:Debug', 'Windows_NT:arm:Debug', 'RHEL7.2:x64:Release', 'CentOS7.1:x64:Debug', 'Fedora23:x64:Debug', 'OpenSUSE13.2:x64:Debug', 'OpenSUSE42.1:x64:Debug']
 
 def static getBuildJobName(def configuration, def os, def architecture) {
     return configuration.toLowerCase() + '_' + os.toLowerCase() + '_' + architecture.toLowerCase()
@@ -39,7 +39,12 @@ platformList.each { platform ->
         buildCommand = ".\\build.cmd -Configuration ${configuration} -Architecture ${architecture} -RunInstallerTestsInDocker -Targets Default"
     }
     else if (os == 'Ubuntu') {
-        buildCommand = "./build.sh --skip-prereqs --configuration ${configuration} --docker ubuntu.14.04 --targets Default"
+        if (architecture == 'arm') {
+            buildCommand = "./cross/build-rootfs.sh arm && ./build.sh --configuation ${configuration} --docker ubuntu.14.04 --env-vars DISABLE_CROSSGEN=1,TARGETPLATFORM=arm,TARGETRID=ubuntu.14.04-arm,CROSS=1 --targets Default"
+        }
+        else {
+            buildCommand = "./build.sh --skip-prereqs --configuration ${configuration} --docker ubuntu.14.04 --targets Default"
+        }
     }
     else {
         // Jenkins non-Ubuntu CI machines don't have docker
